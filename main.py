@@ -1,16 +1,13 @@
-# This is a sample Python script.
+from fastapi import FastAPI, Request
+from transformers import pipeline
 
-# Press Alt+Shift+X to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+app = FastAPI()
 
+model = pipeline('text-generation', model='YOUR_MODEL_HERE')
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+Shift+B to toggle the breakpoint.
-
-
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+@app.post("/generate")
+async def generate_text(request: Request):
+    data = await request.json()
+    text = data.get("text")
+    generated_text = model(text)
+    return {"generated_text": generated_text}
