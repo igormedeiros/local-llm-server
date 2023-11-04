@@ -18,6 +18,7 @@ def load_model(model_name="mistralai/Mistral-7B-v0.1"):
     model = AutoModelForCausalLM.from_pretrained(model_name)
     return tokenizer, model
 
+
 @app.post("/v1/{model_name}")
 async def generate_text(model_name: str, request: GenerateRequest):
     tokenizer, model = load_model(model_name)
