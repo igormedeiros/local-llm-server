@@ -13,14 +13,20 @@ class GenerateRequest(pydantic.BaseModel):
     presence_penalty: float
     stop: list
 
-def load_model(model_name="mistralai/Mistral-7B-v0.1"):
+def map_model_name(model_name_short: str) -> str:
+    model_mapping = {
+        "mistral": "mistralai/Mistral-7B-v0.1"
+    }
+    return model_mapping.get(model_name_short.lower(), model_name_short)
+
+def load_model(model_name: str):
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     model = AutoModelForCausalLM.from_pretrained(model_name)
     return tokenizer, model
 
-
-@app.post("/v1/{model_name}")
-async def generate_text(model_name: str, request: GenerateRequest):
+@app.post("/v1/{model_name_short}/completions")
+async def generate_text(model_name_short: str, request: GenerateRequest):
+    model_name = map_model_name(model_name_short)
     tokenizer, model = load_model(model_name)
     inputs = tokenizer(request.prompts[0], return_tensors="pt", truncation=True)
     outputs = model.generate(**inputs, max_length=request.max_tokens, temperature=request.temperature, top_p=request.top_p)
