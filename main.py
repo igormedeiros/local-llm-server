@@ -18,7 +18,7 @@ def load_model(model_name):
     model = AutoModelForCausalLM.from_pretrained(model_name)
     return tokenizer, model
 
-@app.post("/v1/{model_name}")
+@app.post("/v1/{model_name}/completions")
 async def generate_text(model_name: str, request: GenerateRequest):
     tokenizer, model = load_model(model_name)
     inputs = tokenizer(request.prompts[0], return_tensors="pt", truncation=True)
