@@ -4,12 +4,8 @@ from transformers import AutoTokenizer, AutoModelForCausalLM
 app = FastAPI()
 
 def load_model(model_name):
-    if model_name == "Mistral":
-        model_path = "/caminho/para/Mistral-7B-Instruct-v0.1-GGUF"
-    else:
-        model_path = model_name  # assume que é um modelo da Hugging Face
-    tokenizer = AutoTokenizer.from_pretrained(model_path)
-    model = AutoModelForCausalLM.from_pretrained(model_path)
+    tokenizer = AutoTokenizer.from_pretrained(model_name)
+    model = AutoModelForCausalLM.from_pretrained(model_name)
     return tokenizer, model
 
 @app.get("/v1/{model_name}")
