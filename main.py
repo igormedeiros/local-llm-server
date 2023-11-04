@@ -13,7 +13,7 @@ class GenerateRequest(pydantic.BaseModel):
     presence_penalty: float
     stop: list
 
-def load_model(model_name):
+def load_model(model_name="Mistral-7B-v0.1"):
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     model = AutoModelForCausalLM.from_pretrained(model_name)
     return tokenizer, model
