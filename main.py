@@ -1,6 +1,6 @@
 from fastapi import FastAPI, APIRouter, HTTPException
 from fastapi.responses import JSONResponse
-from transformers import AutoTokenizer, AutoModelForCausalLM
+from transformers import AutoTokenizer, AutoModelForCausalLM, set_token
 from pydantic import BaseModel
 import logging
 import json
@@ -11,6 +11,20 @@ router = APIRouter(prefix="/v1")
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+# Function to load API token from a JSON file
+def load_api_token():
+    try:
+        with open('api_token.json', 'r') as file:
+            data = json.load(file)
+            return data['api_token']
+    except Exception as e:
+        logger.error(f"Error loading API token from JSON: {e}")
+        return None
+
+# Set your Hugging Face API token
+api_token = load_api_token()
+set_token(api_token)
 
 # Function to map the short name to the actual model name
 def map_model_name(model_name_short: str) -> str:
@@ -32,16 +46,6 @@ class GenerateRequest(BaseModel):
     presence_penalty: float
     stop: list
 
-# Function to load API token from a JSON file
-def load_api_token():
-    try:
-        with open('api_token.json', 'r') as file:
-            data = json.load(file)
-            return data['api_token']
-    except Exception as e:
-        logger.error(f"Error loading API token from JSON: {e}")
-        return None
-
 # Load API token from JSON file
 api_token = load_api_token()
 
@@ -55,7 +59,7 @@ async def init_model(model_name_short: str):
         try:
             logger.info(f"Initializing model: {model_name}")
             tokenizer = AutoTokenizer.from_pretrained(model_name)
-            model = AutoModelForCausalLM.from_pretrained(model_name, api_token=load_api_token())
+            model = AutoModelForCausalLM.from_pretrained(model_name)
             logger.info("Model initialized successfully.")
             return {"message": f"Model {model_name} loaded successfully"}
         except Exception as e:
