@@ -1,6 +1,6 @@
 from fastapi import FastAPI, APIRouter, HTTPException
 from fastapi.responses import JSONResponse
-from transformers import AutoTokenizer, AutoModelForCausalLM, set_token
+from transformers import AutoTokenizer, AutoModelForCausalLM, authentication
 from pydantic import BaseModel
 import logging
 import json
@@ -24,7 +24,7 @@ def load_api_token():
 
 # Set your Hugging Face API token
 api_token = load_api_token()
-set_token(api_token)
+authentication.set_token(api_token)
 
 # Function to map the short name to the actual model name
 def map_model_name(model_name_short: str) -> str:
