@@ -3,7 +3,14 @@ from fastapi.responses import JSONResponse
 from transformers import AutoTokenizer, AutoModelForCausalLM, authentication
 from pydantic import BaseModel
 import logging
-import json
+import os
+
+# Get the API token from the environment variable
+api_token = os.environ.get("HUGGINGFACE_API_TOKEN")
+
+# Check if the token is available
+if api_token is None:
+    raise ValueError("HUGGINGFACE_API_TOKEN environment variable not set.")
 
 app = FastAPI()
 router = APIRouter(prefix="/v1")
@@ -11,20 +18,6 @@ router = APIRouter(prefix="/v1")
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-
-# Function to load API token from a JSON file
-def load_api_token():
-    try:
-        with open('api_token.json', 'r') as file:
-            data = json.load(file)
-            return data['api_token']
-    except Exception as e:
-        logger.error(f"Error loading API token from JSON: {e}")
-        return None
-
-# Set your Hugging Face API token
-api_token = load_api_token()
-authentication.set_token(api_token)
 
 # Function to map the short name to the actual model name
 def map_model_name(model_name_short: str) -> str:
@@ -45,9 +38,6 @@ class GenerateRequest(BaseModel):
     frequency_penalty: float
     presence_penalty: float
     stop: list
-
-# Load API token from JSON file
-api_token = load_api_token()
 
 # New endpoint to initialize the model
 @router.get("/init_model/{model_name_short}")
