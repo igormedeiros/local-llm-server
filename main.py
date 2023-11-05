@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 # Function to map the short name to the actual model name
 def map_model_name(model_name_short: str) -> str:
     model_name_map = {
-        "mistral": "mistralai/Mistral-7B-Instruct-v0.1"
+        "mistral": "mistralai/Mistral-7B-v0.112"
     }
     return model_name_map.get(model_name_short.lower(), model_name_short)
 
