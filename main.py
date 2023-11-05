@@ -3,6 +3,7 @@ from fastapi.responses import JSONResponse
 from transformers import AutoTokenizer, AutoModelForCausalLM
 from pydantic import BaseModel
 import logging
+import json
 
 app = FastAPI()
 router = APIRouter(prefix="/v1")
@@ -30,6 +31,19 @@ class GenerateRequest(BaseModel):
     frequency_penalty: float
     presence_penalty: float
     stop: list
+
+# Function to load API token from a JSON file
+def load_api_token():
+    try:
+        with open('api_token.json', 'r') as file:
+            data = json.load(file)
+            return data['api_token']
+    except Exception as e:
+        logger.error(f"Error loading API token from JSON: {e}")
+        return None
+
+# Load API token from JSON file
+api_token = load_api_token()
 
 # New endpoint to initialize the model
 @router.get("/init_model/{model_name_short}")
