@@ -1,6 +1,6 @@
 from fastapi import FastAPI, APIRouter, HTTPException
 from fastapi.responses import JSONResponse
-from transformers import AutoTokenizer, AutoModelForCausalLM, authentication
+from transformers import AutoTokenizer, AutoModelForCausalLM
 from pydantic import BaseModel
 import logging
 import os
