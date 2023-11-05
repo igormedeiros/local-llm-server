@@ -55,7 +55,7 @@ async def init_model(model_name_short: str):
         try:
             logger.info(f"Initializing model: {model_name}")
             tokenizer = AutoTokenizer.from_pretrained(model_name)
-            model = AutoModelForCausalLM.from_pretrained(model_name, token=load_api_token())
+            model = AutoModelForCausalLM.from_pretrained(model_name, api_token=load_api_token())
             logger.info("Model initialized successfully.")
             return {"message": f"Model {model_name} loaded successfully"}
         except Exception as e:
